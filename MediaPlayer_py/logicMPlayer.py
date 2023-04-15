@@ -1,3 +1,4 @@
+import json
 import sys
 #FOR_SLIDER
 from PyQt5.QtCore import QUrl  #
@@ -7,7 +8,7 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 
 #add Ui_Dialog.py
 from MPlayer import Ui_Dialog
@@ -16,17 +17,7 @@ from MPlayer import Ui_Dialog
 from LogToAdmin import *
 from AdminForm import *
 
-# class File:
-#     def __init__(self, main_window):
-#         self.main_window = main_window
-#         self.media_player = main_window.media_player
-#
-#     def open_file(self):
-#         filename, _ = QFileDialog.getOpenFileName(self.main_window, "Open Video")
-#
-#         if filename:
-#             self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(filename)))
-#             self.main_window.OpenButton.setEnabled(True)
+
 from abc import ABC, abstractmethod
 
 class AbstractFile(ABC):
@@ -86,11 +77,29 @@ class SliderPosition:
 
 
 
-class PlayPause:
+# class PlayPause:
+#     def __init__(self, main_window):
+#         self.main_window = main_window
+#         self.media_player = main_window.media_player
+#
+#     def play_video(self):
+#         if self.media_player.state() == QMediaPlayer.PlayingState:
+#             self.media_player.pause()
+#         else:
+#             self.media_player.play()
+from abc import ABC, abstractmethod
+
+class AbstractPlayPause(ABC):
     def __init__(self, main_window):
         self.main_window = main_window
         self.media_player = main_window.media_player
 
+    @abstractmethod
+    def play_video(self):
+        pass
+
+
+class PlayPause(AbstractPlayPause):
     def play_video(self):
         if self.media_player.state() == QMediaPlayer.PlayingState:
             self.media_player.pause()
@@ -112,10 +121,21 @@ def LogIn():
 
         #Экземпляр класса AdminForm
         admForm = AdminForm()
+
+
         def checkPassLog():
             try:
                 if ui.TexBox_LogIN.text() == '123' and ui.TextBox_Password.text() == '123':
                     admForm.openAdminForm()
+                else:
+                    # создаем окно-уведомление об ошибке
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setText("Ошибка ввода данных")
+                    msg.setInformativeText("Неправильный логин или пароль")
+                    msg.setWindowTitle("Ошибка ввода данных")
+                    msg.exec_()
+
             except Exception as e:
                 print(e)
 
@@ -135,6 +155,7 @@ def LogIn():
 
 
 class AdminForm():
+
     def openAdminForm(self):
         try:
             global SetColorPanel
@@ -144,34 +165,74 @@ class AdminForm():
             LogToAdmin.close()
             SetColorPanel.show()
 
-            def standart_thema(self):
-                # Установка светлой темы для Screen_translator
+            # Методы записи и установки цвета
+            def set_color_and_save(color):
                 palette = QPalette()
-                palette.setColor(QPalette.Window, QColor('green'))
-                palette.setColor(QPalette.WindowText, QColor('purple'))
-                palette.setColor(QPalette.ButtonText, QColor('purple'))
+                palette.setColor(QPalette.Window, color)
+
                 window.setPalette(palette)
 
-                # window.setStyleSheet(f"background-color: green; color: black;") Полное изменения цвета всех элементов
+                with open('colors.txt', 'w') as f:
+                    f.write(color.name() + '\n')
 
-                # Установка светлой темы для текстовых окон и кнопок
-                # window.setStyleSheet(f"background-color: purple; color: black;")
+                SetColorPanel.close()
+                window.show()
+
+            # Цвета для формы
+            def standart_thema():
+                set_color_and_save(QColor('#ffffff'))
+
+            def green_thema():
+                set_color_and_save(QColor('#008000'))
+
+            def red_thema():
+                set_color_and_save(QColor('#800000'))
+
+            def black_thema():
+                set_color_and_save(QColor('#333333'))
+
         except Exception as e:
             print(e)
 
-
         try:
-            def showMainWindow():
+            def returnBttn():
                 SetColorPanel.close()
                 window.show()
         except Exception as e:
             print(e)
-        #Вызов метода для изменения темы по нажатии на кнопку
+
+
+        # Стандартная тема
         ui.SaveColor.clicked.connect(standart_thema)
 
-        #Метод, который вызывает главную форму с измененным цветом
-        ui.SaveColor.clicked.connect(showMainWindow)
+        # Зеленая тема
+        ui.GreenButton.clicked.connect(green_thema)
 
+        # Красная тема
+        ui.RedButton.clicked.connect(red_thema)
+
+        # Темная тема
+        ui.BlackButton.clicked.connect(black_thema)
+
+        #Кнопка возврата
+        ui.ReturnButton.clicked.connect(returnBttn)
+
+
+
+    # Функция для установки сохраненного цвета
+    def set_saved_color(self):
+        try:
+            with open('colors.txt', 'r') as f:
+                color = f.readline().strip()
+                palette = QPalette()
+                palette.setColor(QPalette.Window, QColor(color))
+                window.setPalette(palette)
+        except Exception as e:
+            print(e)
+
+
+
+# Звуковой слайдер
 class VolumeSliderHandler:
     def __init__(self, media_player, slider):
         self.media_player = media_player
@@ -195,8 +256,9 @@ class MyWindow(QMainWindow, Ui_Dialog):
         self.video_widget = QVideoWidget(self)
         self.media_player.setVideoOutput(self.video_widget)
 
-        #create rectanglo for video
+        #create rectangle for video
         self.video_widget.setGeometry(0, 0, 1125, 525)
+
 
         #  File
         self.file = File(self)
@@ -218,8 +280,11 @@ class MyWindow(QMainWindow, Ui_Dialog):
 
 
 
-
 app = QApplication(sys.argv)
 window = MyWindow()
+
+palette = AdminForm()
+palette.set_saved_color()
+
 window.show()
 sys.exit(app.exec_())

@@ -23,7 +23,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/Desktop/2 КУРС -2 СЕМЕСТР/Курсовая/MediaPlayer_py&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/Desktop/2 КУРС -2 СЕМЕСТР/Курсовая/Player&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -76,7 +76,12 @@
       <workItem from="1681126396664" duration="57000" />
       <workItem from="1681209528658" duration="2281000" />
       <workItem from="1681297213695" duration="6529000" />
-      <workItem from="1681384388685" duration="5052000" />
+      <workItem from="1681384388685" duration="5680000" />
+      <workItem from="1681401266351" duration="45000" />
+      <workItem from="1681463598189" duration="162000" />
+      <workItem from="1681486371062" duration="166000" />
+      <workItem from="1681550810524" duration="782000" />
+      <workItem from="1681551716398" duration="13440000" />
     </task>
     <servers />
   </component>
@@ -84,7 +89,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/MediaPlayer_py$logicMPlayer.coverage" NAME="logicMPlayer Coverage Results" MODIFIED="1681389366601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/MediaPlayer_py$logicMPlayer.coverage" NAME="logicMPlayer Coverage Results" MODIFIED="1681565254310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/MediaPlayer_py$MPlayer.coverage" NAME="MPlayer Coverage Results" MODIFIED="1681050082693" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
