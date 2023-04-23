@@ -31,8 +31,11 @@ class Ui_SetColorPanel(object):
         self.label.setGeometry(QtCore.QRect(100, 10, 91, 16))
         self.label.setObjectName("label")
         self.ReturnButton = QtWidgets.QPushButton(SetColorPanel)
-        self.ReturnButton.setGeometry(QtCore.QRect(100, 160, 71, 31))
+        self.ReturnButton.setGeometry(QtCore.QRect(10, 160, 121, 31))
         self.ReturnButton.setObjectName("ReturnButton")
+        self.pushButton = QtWidgets.QPushButton(SetColorPanel)
+        self.pushButton.setGeometry(QtCore.QRect(150, 160, 121, 28))
+        self.pushButton.setObjectName("pushButton")
 
         self.retranslateUi(SetColorPanel)
         QtCore.QMetaObject.connectSlotsByName(SetColorPanel)
@@ -46,6 +49,7 @@ class Ui_SetColorPanel(object):
         self.BlackButton.setText(_translate("SetColorPanel", "Темная"))
         self.label.setText(_translate("SetColorPanel", "Цвета формы"))
         self.ReturnButton.setText(_translate("SetColorPanel", "Назад"))
+        self.pushButton.setText(_translate("SetColorPanel", "Лог"))
 
 
 if __name__ == "__main__":

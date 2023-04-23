@@ -1,6 +1,7 @@
-import json
+import os
 import sys
 #FOR_SLIDER
+import datetime
 from PyQt5.QtCore import QUrl  #
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor
@@ -16,6 +17,8 @@ from MPlayer import Ui_Dialog
 #add admin ui
 from LogToAdmin import *
 from AdminForm import *
+
+from LogForm import Ui_LogForm
 
 
 from abc import ABC, abstractmethod
@@ -40,11 +43,23 @@ class File(AbstractFile):
 
 
 
+#Функция записи лога в файл
+def log_video_duration(filename, duration):
+    log_file_path = os.path.join(os.getcwd(), "log.txt")
+    with open(log_file_path, "a") as f:
+        minutes, seconds = divmod(duration, 60)
+        seconds = round(seconds, 2)  # округляем до двух знаков после запятой
+        f.write(f"{filename}: {int(minutes)} minutes {float(seconds)} seconds\n")
+
+
+
 class SliderPosition:
     def __init__(self, main_window):
         self.main_window = main_window
         self.media_player = main_window.media_player
 
+        #вызов записи лога
+        self.media_player.stateChanged.connect(self.media_player_state_changed)
         # reference to the slider widget
         self.slider = main_window.VideoSlider
 
@@ -57,6 +72,7 @@ class SliderPosition:
         self.media_player.durationChanged.connect(self.set_duration)
         self.media_player.positionChanged.connect(self.set_position)
 
+
     def set_position(self, position):
         self.slider.setValue(position)
 
@@ -67,6 +83,7 @@ class SliderPosition:
         position = self.slider.value()
         self.media_player.setPosition(position)
 
+
     def change_video_position(self):
         if self.media_player.state() == QMediaPlayer.PlayingState:
             self.media_player.pause()
@@ -75,18 +92,19 @@ class SliderPosition:
         else:
             self.set_video_position()
 
+    def media_player_state_changed(self, state):
+        if state == QMediaPlayer.PlayingState:
+            self.start_time = datetime.datetime.now()
+
+        elif state == QMediaPlayer.PausedState:
+            if self.start_time is not None:
+                end_time = datetime.datetime.now()
+                duration = (end_time - self.start_time).total_seconds()
+                filename = self.media_player.media().canonicalUrl().fileName()
+                log_video_duration(filename, duration)
+                self.start_time = None
 
 
-# class PlayPause:
-#     def __init__(self, main_window):
-#         self.main_window = main_window
-#         self.media_player = main_window.media_player
-#
-#     def play_video(self):
-#         if self.media_player.state() == QMediaPlayer.PlayingState:
-#             self.media_player.pause()
-#         else:
-#             self.media_player.play()
 from abc import ABC, abstractmethod
 
 class AbstractPlayPause(ABC):
@@ -217,6 +235,7 @@ class AdminForm():
         #Кнопка возврата
         ui.ReturnButton.clicked.connect(returnBttn)
 
+        ui.pushButton.clicked.connect(self.CheckLogForm)
 
 
     # Функция для установки сохраненного цвета
@@ -230,6 +249,32 @@ class AdminForm():
         except Exception as e:
             print(e)
 
+
+
+    def CheckLogForm(self):
+        try:
+            global LogForm
+            LogForm = QtWidgets.QDialog()
+            ui = Ui_LogForm()
+            ui.setupUi(LogForm)
+
+            with open('log.txt', 'r') as f:
+                log_text = f.read()
+            ui.textEdit.setText(log_text)
+            SetColorPanel.close()
+            LogForm.show()
+
+            try:
+                def returnBttn():
+                    LogForm.close()
+                    window.show()
+            except Exception as e:
+                print(e)
+
+            ui.returnButton.clicked.connect(returnBttn)
+
+        except Exception as e:
+            print(e)
 
 
 # Звуковой слайдер
